@@ -1,38 +1,68 @@
-import styles from '../styles/Pokemon.module.css';
+import Image from 'next/image';
+import styles from '../styles/Pokemon.module.css'
 
-function Pokemon({name, type, image}) {
-  const typeColors = {
-    grass: '#DEFDE0',
-    fire: '#FDDFDF',
-    electric: '#FCF7DE',
-    water: '#DEF3FD',
-    ground: '#f4e7da',
-    rock: '#d5d5d4',
-    fairy: '#fceaff',
-    poison: '#98d7a5',
-    bug: '#f8d5a3',
-    dragon: '#97b3e6',
-    psychic: '#eaeda1',
-    flying: '#F5F5F5',
-    fighting: '#E6E0D4',
-    normal: '#F5F5F5',
-    ice: '#c0ecff',
-    steel: '#717171',
-  };
+function Pokemon(props) {
+	let pokemonTypeStyle = {}
+	switch (props.type) {
+		case 'normal':
+			pokemonTypeStyle.backgroundColor = '#f5f5f5'
+			break
+		case 'fire':
+			pokemonTypeStyle.backgroundColor = '#fddfdf'
+			break
+		case 'grass':
+			pokemonTypeStyle.backgroundColor = '#defde0'
+			break
+		case 'electric':
+			pokemonTypeStyle.backgroundColor = '#fcf7de'
+			break
+		case 'water':
+			pokemonTypeStyle.backgroundColor = '#def3fd'
+			break
+		case 'ground':
+			pokemonTypeStyle.backgroundColor = '#f4e7da'
+			break
+		case 'rock':
+			pokemonTypeStyle.backgroundColor = '#d5d5d4'
+			break
+		case 'fairy':
+			pokemonTypeStyle.backgroundColor = '#fceaff'
+			break
+		case 'poison':
+			pokemonTypeStyle.backgroundColor = '#98d7a5'
+			break
+		case 'bug':
+			pokemonTypeStyle.backgroundColor = '#f8d5a3'
+			break
+		case 'dragon':
+			pokemonTypeStyle.backgroundColor = '#97b3e6'
+			break
+		case 'psychic':
+			pokemonTypeStyle.backgroundColor = '#eaeda1'
+			break
+		case 'flying':
+			pokemonTypeStyle.backgroundColor = '#f5f5f5'
+			break
+		case 'fighting':
+			pokemonTypeStyle.backgroundColor = '#e6e0d4'
+			break
+	}
 
-  const styleType = { backgroundColor: typeColors[type] || '#FFF' };
-
-  return(
-    <div className={styles.pokemon} style={styleType}>
-      <div className={styles.imgContainer}>
-        <img id="img-mock" src={image} alt={name} />
-      </div>
-      <div className={styles.info}>
-        <h3 className={styles.name}>{name}</h3>
-        <span>Type: <span>{type}</span></span>
-      </div>
-    </div>
-  )
+	return (
+		<div className={styles.pokemon} style={pokemonTypeStyle}>
+			<div className={styles.imgContainer}>
+				<Image
+					src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${props.id}.png`} alt="pokemon" width={100} height={100}
+				/>
+			</div>
+			<div className={styles.info}>
+				<h2 className={styles.name}>{props.name}</h2>
+				<span className={styles.type}>
+					Type: <span>{props.type}</span>
+				</span>
+			</div>
+		</div>
+	)
 }
 
 export default Pokemon

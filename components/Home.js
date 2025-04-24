@@ -1,40 +1,57 @@
-import styles from '../styles/Home.module.css';
-import { useState, useEffect } from 'react'
-import Pokemon from './Pokemon';
+import { useEffect, useState } from 'react'
+import Head from 'next/head';
+import Pokemon from './Pokemon'
+import styles from '../styles/Home.module.css'
 
 function Home() {
-  const [pokemonList, setPokemonList] = useState([])
-  const [nextPokemon, setNextPokemon] = useState(false)
-  const [id, setId] = useState(1)
-  
-  const getPokemons = async () => {
-    const pokemonsData = [...pokemonList]
-    for (let pokemonId = id; pokemonId < id + 15; pokemonId++) {
-      const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`);
-      const data = await response.json();
-      pokemonsData.push(data)
-    }
-    setPokemonList(pokemonsData)
-    setId(id + 15)
-  }
+	const [startIndex, setStartIndex] = useState(1)
+	const [pokemonsNumber, setPokemonsNumber] = useState(15)
+	const [pokemonsData, setPokemonsData] = useState([])
 
-  useEffect(() => {
-    getPokemons()
-  }, [nextPokemon])
-  
-  const pokemons = pokemonList.map((data, index) => {
-    return <Pokemon key={index} name={data.name} type={data.types[0].type.name} image={data.sprites.front_default} id={index}/> 
-  })
+	const fetchPokemons = async () => {
+		const newPokemons = []
 
-  return (
-    <div className={styles.mainContainer}>
-      <h1 className={styles.title}>Pokedex</h1>
-      <div className={styles.pokemonContainer}>
-        {pokemons}
-      </div>
-      <button className={styles.next} onClick={() => setNextPokemon(!nextPokemon)}>Next</button>
-    </div>
-  );
+		for (let i = startIndex; i <= pokemonsNumber; i++) {
+			const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${i}`)
+			const data = await response.json()
+
+			const newPokemon = {
+				id: data.id,
+				name: data.name[0].toUpperCase() + data.name.slice(1),
+				type: data.types[0].type.name,
+			}
+
+			newPokemons.push(newPokemon)
+		}
+
+		setPokemonsData([...pokemonsData, ...newPokemons])
+		setStartIndex(startIndex + pokemonsNumber)
+		setPokemonsNumber(pokemonsNumber + pokemonsNumber)
+	}
+
+	useEffect(() => {
+		fetchPokemons()
+	}, [])
+
+	const pokemons = pokemonsData.map((data, index) => {
+		return <Pokemon key={index} id={data.id} name={data.name} type={data.type} />
+	})
+
+	return (
+		<>
+			<Head>
+					<title>Pokedex</title>
+					<link rel="icon" href="/favicon.ico"></link>
+					<meta name="description" content="pokedex description"></meta>
+					<meta name="viewport" content="initial-scale=1.0, width=device-width"></meta>
+			</Head>
+			<div className={styles.container}>
+				<h1 className={styles.title}>Pokedex</h1>
+				<div className={styles.pokemonContainer}>{pokemons}</div>
+				<button type='button' onClick={() => fetchPokemons()} className={styles.next}>Next</button>
+			</div>
+		</>	
+	)
 }
 
-export default Home;
+export default Home
